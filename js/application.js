@@ -1,4 +1,4 @@
-var app = angular.module('app', ['tracksJson', 'ui.bootstrap', 'listGenres', 'addTracks', 'createGenre', 'updateTrack']);
+var app = angular.module('app', ['tracksJson', 'ui.bootstrap', 'listGenres', 'addTracks', 'createGenre', 'updateTrack', 'updateGenre']);
 
 app.filter('startFrom', function () {
     return function (input, start) {
@@ -75,6 +75,53 @@ app.controller('MainCtrl', function ($scope, JsonService, getGenresService, filt
 
 });
 
+
+app.controller('MainCtrlGenre', function ($scope, getGenresService, filterFilter) {
+
+    $scope.invokeGenre = function (id, name) {
+        $scope.editGenreId = id;
+        $scope.editGenreName = name;
+
+    };
+
+    getGenresService.query(function (data) {
+        $scope.genreInfo = data;
+
+        /****************************** pagination part starts ***************************/
+
+        // create empty search model (object) to trigger $watch on update
+        $scope.search = {};
+
+        $scope.resetFilters = function () {
+            // needs to be a function or it won't trigger a $watch
+            $scope.search = {};
+        };
+
+        // pagination controls
+        $scope.currentPage = 1;
+        $scope.totalItems = $scope.genreInfo.length;
+        $scope.entryLimit = 8; // items per page
+        $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+
+        // $watch search to update pagination
+        $scope.$watch('search', function (newVal, oldVal) {
+            $scope.filtered = filterFilter($scope.genreInfo, newVal);
+            $scope.totalItems = $scope.filtered.length;
+            $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+            $scope.currentPage = 1;
+        }, true);
+
+        /************************** pagination part ends *****************************/
+
+
+
+
+    });
+
+
+
+});
+
 app.controller('AddTrackController', function ($scope, postTracksService) {
 
     $scope.values = [];
@@ -94,7 +141,7 @@ app.controller('AddTrackController', function ($scope, postTracksService) {
 
 
         }, function (response) {
-            alert("Track Added Successfully");
+            alert("Track Added Successfully......");
         });
 
     }
@@ -103,13 +150,13 @@ app.controller('AddTrackController', function ($scope, postTracksService) {
 app.controller('AddGenreController', function ($scope, postGenreService) {
 
     $scope.saveGenre = function () {
-        alert('addGenreController' + " = " + $scope.genreName);
+
         postGenreService.save({
             'name': $scope.genreName
 
 
         }, function (response) {
-            alert("Genre Added Successfully");
+            alert("Genre Added Successfully......");
         });
 
     }
@@ -130,8 +177,24 @@ app.controller('UpdateTrackController', function ($scope, updateTrackService) {
                 , 'genres': $scope.values
             }
             , function (response) {
-                alert("Updated Successfully...");
+                alert("Updated Successfully.....");
             });
+
+    }
+
+});
+
+app.controller('UpdateGenreController', function ($scope, updateGenreService) {
+
+    $scope.updateGenre = function () {
+
+        updateGenreService.save({
+            'id': $scope.editGenreId
+            , 'name': $scope.editGenreName
+
+        }, function (response) {
+            alert("Updated Successfully.....");
+        });
 
     }
 

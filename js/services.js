@@ -50,3 +50,15 @@ angular.module('createGenre', ['ngResource'])
 
         });
     });
+angular.module('updateGenre', ['ngResource'])
+    .factory('updateGenreService', function ($resource) {
+        return $resource('http://104.197.128.152:8000/v1/genres/:id', {
+            id: '@id'
+        }, {
+            update: {
+                method: 'POST'
+                , isArray: false
+            }
+
+        });
+    });
