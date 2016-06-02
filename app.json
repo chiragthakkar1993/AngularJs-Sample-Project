@@ -1,0 +1,16 @@
+{
+  "name": "AngularJs-Sample-Project",
+  "description": "",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
